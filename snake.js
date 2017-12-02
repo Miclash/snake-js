@@ -44,7 +44,7 @@ function RunGame() {
 
     ctx.fillStyle = 'green';
     for (var n = 0; n < Fruits.length; n++){
-        ctx.fillRect(Fruits[n][0]  * Speed , Fruits[n][1] * Speed,10,10);
+        ctx.fillRect(Fruits[n][0]   , Fruits[n][1]  ,10,10);
     }
 
     return ;
@@ -57,10 +57,12 @@ function myMove() {
 
         ctx.fillStyle = 'blue';
         ctx.fillRect(AllPos[0][0]  * Speed , AllPos[0][1] * Speed,10,10);
-        ctx.fillStyle = 'green';
-        for (var n = 0; n < Fruits.length; n++){
-            ctx.fillRect(Fruits[n][0]   , Fruits[n][1] ,10,10);
-        }
+        // ctx.fillStyle = 'green';
+        // for (var n = 0; n < Fruits.length; n++){
+        //     ctx.fillRect(Fruits[n][0]   , Fruits[n][1] ,10,10);
+        //     var img2 = ctx.getImageData(Fruits[n][0]   , Fruits[n][1] ,10,10);
+    
+        // }
 
         ctx.fillStyle = 'white';
         AllPos[l-1][0] = AllPos[l-1][0] + Xdir;
@@ -68,13 +70,18 @@ function myMove() {
 
 
         var imgData=ctx.getImageData(AllPos[l-1][0] * Speed , AllPos[l-1][1] * Speed,10,10).data;
+        if (IsCollision(imgData, 255, 255, 255)){
+            document.removeEventListener('keydown', KeyPress)
+            ctx.fillStyle = 'red';
+            ctx.fillRect(0,0,300,300);
+            return ;
+        }
         if (IsCollision(imgData, 0, 0, 0)){
             document.removeEventListener('keydown', KeyPress)
             ctx.fillStyle = 'red';
             ctx.fillRect(0,0,300,300);
             return ;
         }
-
         var EncounterFruit = 0;
         if (IsCollision(imgData, 0,255,0)){
             EncounterFruit =1;
@@ -86,10 +93,14 @@ function myMove() {
     
         if (EncounterFruit != 0)
         {
-            stop;
+            ctx.fillStyle = 'blue';
+            ctx.fillRect(AllPos[l-1][0]*Speed, AllPos[l-1][1]*Speed,10,10);
+            
+            AllPos[l] = [AllPos[l-1][0],AllPos[l-1][1]];
+            
         }
 
-        for(var j=0;   j < l-1; j++)
+        for(var j=0;   j < AllPos.length-1; j++)
         {
               AllPos[j][0] = AllPos[j+1][0];
               AllPos[j][1] = AllPos[j+1][1];
